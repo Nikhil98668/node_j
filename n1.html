@@ -1,8 +1,102 @@
-<html>
-    <title>
-        CSE
-    </title>
-    <h1>
-        nikhil
-    </h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Form</title>
+</head>
+<body>
+
+    <form onsubmit="handleFormSubmit(event)">
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username" />
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" />
+        <label for="phone">Phone No</label>
+        <input type="tel" name="phone" id="phone" />
+        <button type="submit">Submit</button>
+    </form>
+
+    <ul id="userList"></ul>
+
+    <script>
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            // Collect user details
+            var username = document.getElementById('username').value;
+            var email = document.getElementById('email').value;
+            var phone = document.getElementById('phone').value;
+
+            // Retrieve existing user details from local storage or initialize an empty array
+            var storedUserDetails = JSON.parse(localStorage.getItem('User Details')) || [];
+
+            // Create an object for the new user
+            var newUser = {
+                username: username,
+                email: email,
+                phone: phone
+            };
+
+            // Add the new user to the existing array of user details
+            storedUserDetails.push(newUser);
+
+            // Update the local storage with the modified array
+            localStorage.setItem('User Details', JSON.stringify(storedUserDetails));
+
+            // Clear the form fields
+            document.getElementById('username').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('phone').value = '';
+
+            // Update the displayed user list on the screen
+            updateDisplayedUserList(storedUserDetails);
+        }
+
+        function updateDisplayedUserList(userDetails) {
+            // Access the unordered list element
+            var userListElement = document.getElementById('userList');
+
+            // Clear the existing list items
+            userListElement.innerHTML = '';
+            userDetails.forEach(function(user) {
+                var listItem = document.createElement('li');
+                listItem.textContent = `Username: ${user.username}, Email: ${user.email}, Phone: ${user.phone}`;
+
+                // Create delete button
+                var deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = function() {
+                    // Remove the user from the list
+                    var index = storedUserDetails.indexOf(user);
+                    storedUserDetails.splice(index, 1);
+
+                    // Update local storage
+                    localStorage.setItem('User Details', JSON.stringify(storedUserDetails));
+
+                    // Update the displayed user list
+                    updateDisplayedUserList(storedUserDetails);
+                };
+
+                // Append the delete button to the list item
+                listItem.appendChild(deleteButton);
+
+                // Append the list item to the unordered list
+                userListElement.appendChild(listItem);
+            });
+
+            // Loop through the user details and create list items
+           /* userDetails.forEach(function(user) {
+                var listItem = document.createElement('li');
+                listItem.textContent = `Username: ${user.username}, Email: ${user.email}, Phone: ${user.phone}`;
+                userListElement.appendChild(listItem);
+            });*/
+        }
+
+        // Retrieve user details from local storage and update the displayed user list on page load
+        //var storedUserDetails = JSON.parse(localStorage.getItem('User Details')) || [];
+       // updateDisplayedUserList(storedUserDetails);
+    </script>
+
+</body>
 </html>
