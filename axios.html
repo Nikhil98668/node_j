@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Appointment App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            margin-bottom: 10px;
+        }
+
+        #appointments {
+            margin-top: 20px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        button {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Booking Appointment App</h2>
+
+    <label for="name">Name:</label>
+    <input type="text" id="name" placeholder="Enter your name">
+
+    <label for="date">Date:</label>
+    <input type="date" id="date">
+
+    <label for="time">Time:</label>
+    <input type="time" id="time">
+
+    <button onclick="bookAppointment()">Book Appointment</button>
+
+    <div id="appointments">
+        <h3>Your Appointments</h3>
+        <ul id="appointmentList"></ul>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"></script>
+    <script>
+        function bookAppointment() {
+            const name = document.getElementById('name').value;
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+
+            if (!name || !date || !time) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            const appointment = {
+                name: name,
+                date: date,
+                time: time
+            };
+
+            // Make a POST request to CrudCrud API
+            axios.post(' https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28/appointmentData ', appointment)
+                .then(response => {
+                    console.log('POST Request Successful:', response.data);
+                    // Update the displayed list of appointments
+                    displayAppointments();
+                })
+                .catch(error => {
+                    console.error('POST Request Failed:', error);
+                    // Handle error, if necessary
+                });
+        }
+
+        function displayAppointments() {
+            const appointmentList = document.getElementById('appointmentList');
+            appointmentList.innerHTML = '';
+
+            // Get appointments from CrudCrud API
+            axios.get(' https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28 ')
+                .then(response => {
+                    const appointments = response.data;
+                    // Display each appointment in the list
+                    appointments.forEach((appointment, index) => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${appointment.name} - ${appointment.date} at ${appointment.time}`;
+
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Delete';
+                        deleteButton.onclick = () => deleteAppointment(appointment._id);
+
+                        listItem.appendChild(deleteButton);
+                        appointmentList.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('GET Request Failed:', error);
+                    // Handle error, if necessary
+                });
+        }
+
+        function deleteAppointment(appointmentId) {
+            // Make a DELETE request to CrudCrud API
+            axios.delete(` https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28 ${appointmentId}`)
+                .then(response => {
+                    console.log('DELETE Request Successful:', response.data);
+                    // Update the displayed list of appointments
+                    displayAppointments();
+                })
+                .catch(error => {
+                    console.error('DELETE Request Failed:', error);
+                    // Handle error, if necessary
+                });
+        }
+
+        // Initial display of appointments
+        displayAppointments();
+    </script>
+</body>
+</html>

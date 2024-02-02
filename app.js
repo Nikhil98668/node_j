@@ -296,7 +296,7 @@ console.log('inside b');
             
             
             fun1(10)(30)*/
-            setTimeout(() => console.log('timer expired'), 1000)
+            //setTimeout(() => console.log('timer expired'), 1000)
 
 
 /*function x(y) {
@@ -368,7 +368,7 @@ setTimeout(() => console.log('inside y'), 0)
   }
   
   var yash = new student("yash")*/
-  var student = function(name){
+  /*var student = function(name){
 
     this.name = name;
   
@@ -382,7 +382,96 @@ setTimeout(() => console.log('inside y'), 0)
   
   }
   
-  var yash = new student("yash")
+  var yash = new student("yash")*/
+  
+// Do not touch this function at all
+function create3rdPost(callback) {
+    setTimeout( () => {
+        console.log('Post Three')
+        //If callback function is passed call it
+        if(callback){
+            callback();
+        }
+    }, 3000)
+}
+
+//Please modify this function too to reach the desired output
+/*function create4thPost(callback) {
+    setTimeout( () => {
+        console.log('Post Four')
+        if (callback) {
+            callback();
+        }
+    }, 2000);
+}
+
+// Do not touch this function at all
+function create5thPost() {
+    setTimeout( () => {
+        console.log('Post Five')
+    }, 1000);
+}
+
+//You have to  modify the syntax below to reach the desired output
+//create5thPost(create4thPost(create3rdPost))
+//create3rdPost(create4thPost(create5thPost))
+create3rdPost( ()=>create4thPost(create5thPost));*/
+const posts = [];
+let lastUserActivityTime = null;
+
+function createPost(post) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            posts.push(post);
+            resolve();
+        }, 1000);
+    });
+}
+
+function updateLastUserActivityTime() {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            lastUserActivityTime = new Date()
+            resolve(lastUserActivityTime);
+        }, 1000);
+    });
+}
+
+function deletePost() {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            if (posts.length > 0) {
+                const deletedPost = posts.pop();
+                resolve(deletedPost);
+            } else {
+                reject("ERROR: No posts to delete");
+            }
+        }, 1000);
+    });
+}
+
+// Creating a post and updating user activity time
+createPost({ title: 'Post 1' })
+    .then(() => updateLastUserActivityTime())
+    .then(() => createPost({ title: 'Post 2' }))
+    .then(() => updateLastUserActivityTime())
+    .then(() => createPost({ title: 'Post 3' }))
+    .then(() => updateLastUserActivityTime())
+    .then(() => {
+        // Logging posts and last activity time
+        console.log('All Posts:', posts);
+        console.log('Last User Activity Time:', lastUserActivityTime);
+    })
+    .then(() => deletePost())
+    .then(() => {
+        // Logging remaining posts after deletion
+        console.log('Remaining Posts:', posts);
+    })
+    .catch((error) => console.log(error));
+
+
+
+
 
 
 
