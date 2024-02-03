@@ -67,7 +67,7 @@
                     // Display each appointment in the list
                     appointments.forEach((appointment, index) => {
                         const listItem = document.createElement('li');
-                        listItem.textContent = `${appointment.name} - ${appointment.date} at ${appointment.time}`;
+                        listItem.textContent = `${appointment.name} - ${appointment.date} - ${appointment.time}`;
 
                         const deleteButton = document.createElement('button');
                         deleteButton.textContent = 'Delete';
@@ -85,7 +85,7 @@
 
         function deleteAppointment(appointmentId) {
             // Make a DELETE request to CrudCrud API
-            axios.delete(` https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28/appointmentData ${appointmentId}`)
+            axios.delete(` https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28/appointmentData/${appointmentId}`)
                 .then(response => {
                     console.log('DELETE Request Successful:', response.data);
                     // Update the displayed list of appointments
