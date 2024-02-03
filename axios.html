@@ -27,6 +27,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"></script>
     <script>
+        
         function bookAppointment() {
             const name = document.getElementById('name').value;
             const date = document.getElementById('date').value;
@@ -44,6 +45,8 @@
             };
 
             // Make a POST request to CrudCrud API
+            
+                
             axios.post(' https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28/appointmentData ', appointment)
                 .then(response => {
                     console.log('POST Request Successful:', response.data);
@@ -74,6 +77,13 @@
                         deleteButton.onclick = () => deleteAppointment(appointment._id);
 
                         listItem.appendChild(deleteButton);
+                        //appointmentList.appendChild(listItem);
+
+                        const editButton = document.createElement('button');
+                        editButton.textContent = 'Edit';
+                        editButton.onclick = () => editAppointment(appointment);
+
+                        listItem.appendChild(editButton);
                         appointmentList.appendChild(listItem);
                     });
                 })
@@ -93,6 +103,31 @@
                 })
                 .catch(error => {
                     console.error('DELETE Request Failed:', error);
+                    // Handle error, if necessary
+                });
+        }
+        function editAppointment(appointment) {
+            // Make a PUT request to CrudCrud API
+            document.getElementById("name").value = appointment.name;
+            document.getElementById("date").value = appointment.date;
+            document.getElementById("time").value = appointment.time;
+            const editingAppointmentId = appointment._id;
+           
+
+            axios.put(` https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28/appointmentData/${editingAppointmentId}`)
+                .then(response => {
+                    // Populate form fields with existing values
+                    
+                    deleteAppointment(editingAppointmentId);
+
+            // Delete the user from the list
+            
+                    console.log('PUT Request Successful:', response.data);
+                    // Update the displayed list of appointments
+                    displayAppointments();
+                })
+                .catch(error => {
+                    console.error('PUT Request Failed:', error);
                     // Handle error, if necessary
                 });
         }
