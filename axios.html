@@ -4,38 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Booking Appointment App</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        input {
-            margin-bottom: 10px;
-        }
-
-        #appointments {
-            margin-top: 20px;
-        }
-
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        li {
-            margin-bottom: 10px;
-        }
-
-        button {
-            margin-right: 5px;
-        }
-    </style>
+    
 </head>
 <body>
     <h2>Booking Appointment App</h2>
@@ -43,11 +12,11 @@
     <label for="name">Name:</label>
     <input type="text" id="name" placeholder="Enter your name">
 
-    <label for="date">Date:</label>
-    <input type="date" id="date">
+    <label for="date">email:</label>
+    <input type="email" id="date">
 
-    <label for="time">Time:</label>
-    <input type="time" id="time">
+    <label for="time">Phone:</label>
+    <input type="number" id="time">
 
     <button onclick="bookAppointment()">Book Appointment</button>
 
@@ -92,7 +61,7 @@
             appointmentList.innerHTML = '';
 
             // Get appointments from CrudCrud API
-            axios.get(' https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28 ')
+            axios.get(' https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28/appointmentData ')
                 .then(response => {
                     const appointments = response.data;
                     // Display each appointment in the list
@@ -116,7 +85,7 @@
 
         function deleteAppointment(appointmentId) {
             // Make a DELETE request to CrudCrud API
-            axios.delete(` https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28 ${appointmentId}`)
+            axios.delete(` https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28/appointmentData ${appointmentId}`)
                 .then(response => {
                     console.log('DELETE Request Successful:', response.data);
                     // Update the displayed list of appointments
