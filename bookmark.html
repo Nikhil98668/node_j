@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookmark A Website</title>
+    
+</head>
+<body>
+    <h2>Bookmark A Website</h2>
+
+    <label for="name">Name:</label>
+    <input type="text" id="name" placeholder="Enter Website Name">
+
+    <label for="date">Website URL:</label>
+    <input type="url" id="date">
+
+   
+
+    <button onclick="storeURL()">Submit</button>
+
+    <div id="appointments">
+        <h3>All</h3>
+        <ul id="appointmentList"></ul>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"></script>
+    <script>
+        
+        function storeURL() {
+            const name = document.getElementById('name').value;
+            const url = document.getElementById('date').value;
+            
+
+            if (!name || !url ) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            const appointment = {
+                name: name,
+                url: date,
+                
+            };
+
+            
+            
+                
+            axios.post(' https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28/WebsiteURL ', url)
+                .then(response => {
+                    console.log('POST Request Successful:', response.data);
+                    // Update the displayed list of URL
+                    displayURL();
+                })
+                .catch(error => {
+                    console.error('POST Request Failed:', error);
+                    // Handle error, if necessary
+                });
+        }
+
+        function displayAppointments() {
+            const appointmentList = document.getElementById('appointmentList');
+            appointmentList.innerHTML = '';
+
+            // Get URL from CrudCrud API
+            axios.get(' https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28/WebsiteURL ')
+                .then(response => {
+                    const appointments = response.data;
+                    // Display each URL in the list
+                    appointments.forEach((appointment, index) => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${appointment.name} - ${appointment.date} `;
+
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Delete';
+                        deleteButton.onclick = () => deleteeURL(appointment._id);
+
+                        listItem.appendChild(deleteButton);
+                        //appointmentList.appendChild(listItem);
+
+                        const editButton = document.createElement('button');
+                        editButton.textContent = 'Edit';
+                        editButton.onclick = () => editURL(appointment);
+
+                        listItem.appendChild(editButton);
+                        appointmentList.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('GET Request Failed:', error);
+                    // Handle error, if necessary
+                });
+        }
+
+        function deleteeURL(appointmentId) {
+            // Make a DELETE request to CrudCrud API
+            axios.delete(` https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28/WebsiteURL/${appointmentId}`)
+                .then(response => {
+                    console.log('DELETE Request Successful:', response.data);
+                    // Update the displayed list of appointments
+                    displayURL();
+                })
+                .catch(error => {
+                    console.error('DELETE Request Failed:', error);
+                    // Handle error, if necessary
+                });
+        }
+        function editURL(appointment) {
+            // Make a PUT request to CrudCrud API
+            document.getElementById("name").value = appointment.name;
+            document.getElementById("date").value = appointment.date;
+            const editingAppointmentId = appointment._id;
+           
+
+            axios.put(` https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28/WebsiteURL/${editingAppointmentId}`)
+                .then(response => {
+                    // Populate form fields with existing values
+                    
+                    deleteeURL(editingAppointmentId);
+
+            // Delete the URL from the list
+            
+                    console.log('PUT Request Successful:', response.data);
+                    // Update the displayed list of URL
+                    displayURL();
+                })
+                .catch(error => {
+                    console.error('PUT Request Failed:', error);
+                    // Handle error, if necessary
+                });
+        }
+
+        // Initial display of URL
+        displayURL();
+    </script>
+</body>
+</html>
