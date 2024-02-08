@@ -47,7 +47,7 @@
             // Make a POST request to CrudCrud API
             
                 
-            axios.post(' https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28/appointmentData ', appointment)
+            axios.post('  https://crudcrud.com/api/6d6baf5f8a634965a31c741c3ca46b5f/appointmentData', appointment)
                 .then(response => {
                     console.log('POST Request Successful:', response.data);
                     // Update the displayed list of appointments
@@ -64,7 +64,7 @@
             appointmentList.innerHTML = '';
 
             // Get appointments from CrudCrud API
-            axios.get(' https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28/appointmentData ')
+            axios.get('  https://crudcrud.com/api/6d6baf5f8a634965a31c741c3ca46b5f/appointmentData')
                 .then(response => {
                     const appointments = response.data;
                     // Display each appointment in the list
@@ -95,7 +95,7 @@
 
         function deleteAppointment(appointmentId) {
             // Make a DELETE request to CrudCrud API
-            axios.delete(` https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28/appointmentData/${appointmentId}`)
+            axios.delete(`  https://crudcrud.com/api/6d6baf5f8a634965a31c741c3ca46b5f/appointmentData/${appointmentId}`)
                 .then(response => {
                     console.log('DELETE Request Successful:', response.data);
                     // Update the displayed list of appointments
@@ -114,7 +114,7 @@
             const editingAppointmentId = appointment._id;
            
 
-            axios.put(` https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28/appointmentData/${editingAppointmentId}`)
+            axios.put(`  https://crudcrud.com/api/6d6baf5f8a634965a31c741c3ca46b5f/appointmentData/${editingAppointmentId}`)
                 .then(response => {
                     // Populate form fields with existing values
                     

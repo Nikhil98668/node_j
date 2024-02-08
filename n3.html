@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    
+   
+</head>
+<body>
+
+    <h2>Expense Tracker</h2>
+
+    <form onsubmit="handleFormSubmit1(event)">
+        <label for="expenseAmount">Expense Amount:</label>
+        <input type="number" id="expenseAmount" name="expenseAmount" required>
+
+        
+
+        <label for="expenseName">Expense Name:</label>
+        <input type="text" id="expenseName" name="expenseName" required>
+
+        <label for="expenseCategory">Expense Category:</label>
+        <input type="text" id="expenseCategory" name="expenseCategory" required>
+
+        
+        <button type="submit" >Add Expense</button>
+    </form>
+
+    <h3>Expense List:</h3>
+    <ul id="expenseList"></ul>
+
+    <script>
+        function handleFormSubmit1(event) {
+            event.preventDefault();
+            const expenseAmount = document.getElementById("expenseAmount").value;
+            const expenseName = document.getElementById("expenseName").value;
+            const expenseCategory = document.getElementById("expenseCategory").value;
+
+            if (!expenseCategory || !expenseName || !expenseAmount) {
+                alert("Please fill in all fields: Expense Category, Expense Name, and Expense Amount.");
+            } 
+            const expenseDetails = { expenseCategory, expenseName, expenseAmount };
+
+            const existingExpense = JSON.parse(localStorage.getItem("Expense_Tracker")) || [];
+
+            //const existingExpenseIndex = existingExpense.findIndex(expense => expense.expenseName === expenseName);
+
+            existingExpense.push(expenseDetails);
+
+            localStorage.setItem("Expense_Tracker", JSON.stringify(existingExpense));
+            
+
+           
+            display();
+        }
+        function deleteExpense(index) {
+            const existingExpenses = JSON.parse(localStorage.getItem("Expense_Tracker")) || [];
+            existingExpenses.splice(index, 1);
+            localStorage.setItem("Expense_Tracker", JSON.stringify(existingExpenses));
+            display();
+        }
+        function editExpense(index) {
+            const existingUsers = JSON.parse(localStorage.getItem("Expense_Tracker")) || [];
+            const expenseToEdit = existingUsers[index];
+
+            // Populate form fields with existing values
+            document.getElementById("expenseAmount").value = expenseToEdit.expenseAmount;
+            document.getElementById("expenseName").value = expenseToEdit.expenseName;
+            document.getElementById("expenseCategory").value = expenseToEdit.expenseCategory;
+
+            // Delete the user from the list
+            deleteExpense(index);
+        }
+        function display()
+        {
+            var expenseList = document.getElementById('expenseList');
+
+            expenseList.innerHTML = '';
+            const existingExpense = JSON.parse(localStorage.getItem("Expense_Tracker")) || [];
+
+            existingExpense.forEach(function(expense,index) {
+                var listItem = document.createElement('li');
+                listItem.textContent = `Expense Category: ${expense.expenseCategory}, Expense Name: ${expense.expenseName}, Expense Amount: ${expense.expenseAmount}`;
+                
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "Delete Expense";
+                deleteButton.addEventListener("click", () => deleteExpense(index));
+
+                const editButton = document.createElement("button");
+                editButton.textContent = "Edit Expense";
+                editButton.addEventListener("click", () => editExpense(index));
+
+                listItem.appendChild(deleteButton);
+                listItem.appendChild(editButton);
+
+
+
+                expenseList.appendChild(listItem);
+
+            });
+        }
+        display();
+    </script>
+
+</body>
+</html>

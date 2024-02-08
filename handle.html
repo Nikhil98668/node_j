@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            margin-bottom: 10px;
+        }
+
+        #userDetails {
+            margin-top: 20px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .delete-icon,
+        .edit-icon {
+            cursor: pointer;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>User Details App</h2>
+
+    <label for="name">Name:</label>
+    <input type="text" id="name" placeholder="Enter your name">
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" placeholder="Enter your email">
+
+    <button onclick="submitUserDetails()">Submit User Details</button>
+
+    <div id="userDetails">
+        <h3>User Details</h3>
+        <ul id="userDetailsList"></ul>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js">
+    
+        function submitUserDetails() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+
+            if (!name || !email) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            const userDetails = {
+                name: name,
+                email: email
+            };
+
+            // Making a POST request to the API endpoint
+            axios.post(' https://crudcrud.com/api/6d6baf5f8a634965a31c741c3ca46b5f/bookm/', userDetails)
+                .then(response => {
+                    console.log('POST Request Successful:', response.data);
+                    // Clear the form after submission
+                    clearForm();
+                    // Update the displayed list of user details
+                    displayUserDetails();
+                })
+                .catch(error => {
+                    console.error('POST Request Failed:', error);
+                    // Handle error, if necessary
+                });
+        }
+
+        function displayUserDetails() {
+            const userDetailsList = document.getElementById('userDetailsList');
+            userDetailsList.innerHTML = '';
+
+            // Getting user details from the API endpoint
+            axios.get('  https://crudcrud.com/api/6d6baf5f8a634965a31c741c3ca46b5f/bookm/')
+                .then(response => {
+                    const userdetails = response.data;
+                    // Display each user detail in the list
+                    userdetails.forEach(userdetail => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${userdetail.name} - ${userdetail.email}`;
+
+                        const deleteIcon = document.createElement('span');
+                        deleteIcon.className = 'delete-icon';
+                        deleteIcon.textContent = '❌';
+                        deleteIcon.onclick = () => deleteUserDetails(userdetail._id, listItem);
+
+                        const editIcon = document.createElement('span');
+                        editIcon.className = 'edit-icon';
+                        editIcon.textContent = '✏️';
+                        editIcon.onclick = () => editUserDetails(userdetail);
+
+                        listItem.appendChild(deleteIcon);
+                        listItem.appendChild(editIcon);
+                        userDetailsList.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('GET Request Failed:', error);
+                    // Handle error, if necessary
+                });
+        }
+
+        function editUserDetails(userdetail) {
+            // Populate the form with the selected user detail for editing
+            document.getElementById('name').value = userdetail.name;
+            document.getElementById('email').value = userdetail.email;
+        }
+
+        function deleteUserDetails(userId, listItem) {
+            // Making a DELETE request to the API endpoint
+            axios.delete(` https://crudcrud.com/api/6d6baf5f8a634965a31c741c3ca46b5f/bookm/${userId}`)
+                .then(response => {
+                    console.log('DELETE Request Successful:', response.data);
+                    // Remove the deleted user detail from the displayed list
+                    listItem.remove();
+                })
+                .catch(error => {
+                    console.error('DELETE Request Failed:', error);
+                    // Handle error, if necessary
+                });
+        }
+
+        function clearForm() {
+            // Clear the form fields
+            document.getElementById('name').value = '';
+            document.getElementById('email').value = '';
+        }
+
+        // Initial display of user details
+        displayUserDetails();
+    </script>
+</body>
+</html>

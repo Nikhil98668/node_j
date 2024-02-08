@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details</title>
+</head>
+<body>
+
+    <form onsubmit="handleFormSubmit(event)">
+        <label for="username">Expense Category:</label>
+        <input type="text" name="username" id="username" />
+        <label for="email">Expense Name</label>
+        <input type="text" name="email" id="email" />
+        <label for="phone">Amount</label>
+        <input type="number" name="phone" id="phone" />
+        <button type="submit">Submit</button>
+    </form>
+
+    <ul id="userList"></ul>
+
+    <script>
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const username = document.getElementById("username").value;
+            const email = document.getElementById("email").value;
+            const phone = document.getElementById("phone").value;
+
+            const userDetails = { username, email, phone };
+            
+            // Retrieve existing user details from local storage
+            const existingUsers = JSON.parse(localStorage.getItem("Expenses")) || [];
+
+            // Check if user already exists
+            const existingUserIndex = existingUsers.findIndex(user => user.username === username);
+
+            if (existingUserIndex !== -1) {
+                // User already exists, update the details
+                existingUsers[existingUserIndex] = userDetails;
+            } else {
+                // Add new user details to the list
+                existingUsers.push(userDetails);
+            }
+
+            // Save updated user details to local storage
+            localStorage.setItem("Expenses", JSON.stringify(existingUsers));
+
+            // Clear form fields
+            //document.getElementById("username").value = "";
+            //document.getElementById("email").value = "";
+            //document.getElementById("phone").value = "";
+
+            // Update the user list on the screen
+            displayUserList();
+        }
+
+        function deleteUser(index) {
+            const existingUsers = JSON.parse(localStorage.getItem("Expenses")) || [];
+            existingUsers.splice(index, 1);
+            localStorage.setItem("Expenses", JSON.stringify(existingUsers));
+            displayUserList();
+        }
+
+        function editUser(index) {
+            const existingUsers = JSON.parse(localStorage.getItem("Expenses")) || [];
+            const userToEdit = existingUsers[index];
+
+            // Populate form fields with existing values
+            document.getElementById("username").value = userToEdit.username;
+            document.getElementById("email").value = userToEdit.email;
+            document.getElementById("phone").value = userToEdit.phone;
+
+            // Delete the user from the list
+            deleteUser(index);
+        }
+
+        function displayUserList() {
+            const userList = document.getElementById("userList");
+            userList.innerHTML = "";
+
+            const existingUsers = JSON.parse(localStorage.getItem("Expenses")) || [];
+
+            existingUsers.forEach((user, index) => {
+                const listItem = document.createElement("li");
+                listItem.textContent = `Username: ${user.username}, Email: ${user.email}, Phone: ${user.phone}`;
+
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "Delete";
+                deleteButton.addEventListener("click", () => deleteUser(index));
+
+                const editButton = document.createElement("button");
+                editButton.textContent = "Edit";
+                editButton.addEventListener("click", () => editUser(index));
+
+                listItem.appendChild(deleteButton);
+                listItem.appendChild(editButton);
+
+                userList.appendChild(listItem);
+            });
+        }
+
+        // Initial display of the user list
+        displayUserList();
+    </script>
+
+</body>
+</html>

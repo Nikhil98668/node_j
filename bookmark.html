@@ -8,7 +8,7 @@
 </head>
 <body>
     <h2>Bookmark A Website</h2>
-
+    <form>
     <label for="name">Name:</label>
     <input type="text" id="name" placeholder="Enter Website Name">
 
@@ -17,8 +17,8 @@
 
    
 
-    <button onclick="storeURL()">Submit</button>
-
+    <button onclick="storeURL(event)">Submit</button>
+        </form>
     <div id="appointments">
         <h3>All</h3>
         <ul id="appointmentList"></ul>
@@ -27,7 +27,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"></script>
     <script>
         
-        function storeURL() {
+        function storeURL(event) {
+            event.preventDefault();
             const name = document.getElementById('name').value;
             const url = document.getElementById('date').value;
             
@@ -46,7 +47,7 @@
             
             
                 
-            axios.post(' https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28/WebsiteURL ', url)
+            axios.post('  https://crudcrud.com/api/6d6baf5f8a634965a31c741c3ca46b5f/bookm ', url)
                 .then(response => {
                     console.log('POST Request Successful:', response.data);
                     // Update the displayed list of URL
@@ -58,12 +59,12 @@
                 });
         }
 
-        function displayAppointments() {
+        function displayURL() {
             const appointmentList = document.getElementById('appointmentList');
             appointmentList.innerHTML = '';
 
             // Get URL from CrudCrud API
-            axios.get(' https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28/WebsiteURL ')
+            axios.get('  https://crudcrud.com/api/6d6baf5f8a634965a31c741c3ca46b5f/bookm ')
                 .then(response => {
                     const appointments = response.data;
                     // Display each URL in the list
@@ -94,7 +95,7 @@
 
         function deleteeURL(appointmentId) {
             // Make a DELETE request to CrudCrud API
-            axios.delete(` https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28/WebsiteURL/${appointmentId}`)
+            axios.delete(`  https://crudcrud.com/api/6d6baf5f8a634965a31c741c3ca46b5f/bookm/${appointmentId}`)
                 .then(response => {
                     console.log('DELETE Request Successful:', response.data);
                     // Update the displayed list of appointments
@@ -112,7 +113,7 @@
             const editingAppointmentId = appointment._id;
            
 
-            axios.put(` https://crudcrud.com/api/13d661befe9b435e8584c23aefeb8d28/WebsiteURL/${editingAppointmentId}`)
+            axios.put(`  https://crudcrud.com/api/6d6baf5f8a634965a31c741c3ca46b5f/bookm/${editingAppointmentId}`)
                 .then(response => {
                     // Populate form fields with existing values
                     
@@ -131,7 +132,7 @@
         }
 
         // Initial display of URL
-        displayURL();
+       
     </script>
 </body>
 </html>
