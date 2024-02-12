@@ -22,22 +22,22 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"></script>
     <script>
-        // Define CRUD operations using async/await functions
 async function createAppointment(data) {
-    const response = await fetch(' https://crudcrud.com/api/6d6baf5f8a634965a31c741c3ca46b5f/appointment', {
+    const response = await fetch(' https://crudcrud.com/api/8b10d1f1b3f7470896c36f21005d3fee/appointment', {
         method: 'POST',
        
     });
+    console.log("Item Inserted")
     return await response.json();
 }
 
 async function getAppointmentList() {
-    const response = await fetch(' https://crudcrud.com/api/6d6baf5f8a634965a31c741c3ca46b5f/appointment ');
+    const response = await fetch(' https://crudcrud.com/api/8b10d1f1b3f7470896c36f21005d3fee/appointment ');
     return await response.json();
 }
 
 async function deleteAppointment(id) {
-    const response = await fetch(` https://crudcrud.com/api/6d6baf5f8a634965a31c741c3ca46b5f/appointment/${id}`, {
+    const response = await fetch(` https://crudcrud.com/api/8b10d1f1b3f7470896c36f21005d3fee/appointment/${id}`, {
         method: 'DELETE',
     });
     console.log("Delete Successfull")
@@ -59,17 +59,15 @@ document.getElementById('appointmentForm').addEventListener('submit', async (eve
         const newAppointment = await createAppointment(appointmentData);
         console.log('New appointment created:', newAppointment);
 
-        // Reload appointment list after creating new appointment
         displayAppointments();
     } catch (error) {
         console.error('Error creating appointment:', error);
     }
 });
 
-// Function to display appointments
 async function displayAppointments() {
     const appointmentList = document.getElementById('appointmentList');
-    appointmentList.innerHTML = ''; // Clear previous list
+    appointmentList.innerHTML = ''; 
 
     try {
         const appointments = await getAppointmentList();
@@ -81,6 +79,7 @@ async function displayAppointments() {
             const editButton = document.createElement('button');
             editButton.textContent = 'Edit';
             editButton.addEventListener('click', () => editAppointment(appointment._id));
+            listItem.appendChild(editButton);
 
             
             const deleteButton = document.createElement('button');
@@ -88,11 +87,10 @@ async function displayAppointments() {
             deleteButton.addEventListener('click', async () => {
                 const deleted = await deleteAppointment(appointment._id);
                 if (deleted) {
-                    appointmentList.removeChild(listItem); // Remove item from UI
+                    appointmentList.removeChild(listItem); 
                 }
             });
 
-            listItem.appendChild(editButton);
             listItem.appendChild(deleteButton);
             appointmentList.appendChild(listItem);
         });
@@ -101,7 +99,6 @@ async function displayAppointments() {
     }
 }
 
-// Initial display of appointments
 displayAppointments();
 
     </script>

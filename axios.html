@@ -8,76 +8,61 @@
 </head>
 <body>
     <h2>Booking Appointment App</h2>
-
+    <form >
     <label for="name">Name:</label>
     <input type="text" id="name" placeholder="Enter your name">
 
-    <label for="date">email:</label>
-    <input type="email" id="date">
+    <label for="email">email:</label>
+    <input type="email" id="email">
 
-    <label for="time">Phone:</label>
-    <input type="number" id="time">
+    <label for="number">Phone:</label>
+    <input type="number" id="number">
 
-    <button onclick="bookAppointment()">Book Appointment</button>
-
+    <button onclick="bookAppointment(event)">Book Appointment</button>
+    </form>
     <div id="appointments">
-        <h3>Your Appointments</h3>
+        <h3>Appointments</h3>
         <ul id="appointmentList"></ul>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"></script>
     <script>
         
-        function bookAppointment() {
+        function bookAppointment(event) {
+            event.preventDefault();
             const name = document.getElementById('name').value;
-            const date = document.getElementById('date').value;
-            const time = document.getElementById('time').value;
-
-            if (!name || !date || !time) {
-                alert('Please fill in all fields');
-                return;
-            }
-
+            const email = document.getElementById('email').value;
+            const number = document.getElementById('number').value;
             const appointment = {
                 name: name,
-                date: date,
-                time: time
+                email: email,
+                number: number
             };
-
-            // Make a POST request to CrudCrud API
-            
-                
-            axios.post('  https://crudcrud.com/api/6d6baf5f8a634965a31c741c3ca46b5f/appointmentData', appointment)
+                axios.post('  https://crudcrud.com/api/52b399721e5d4fa1b6968ee150225822/appointmentData',appointment)
                 .then(response => {
-                    console.log('POST Request Successful:', response.data);
-                    // Update the displayed list of appointments
+                    console.log('POST Request Successful:', response);
                     displayAppointments();
                 })
                 .catch(error => {
                     console.error('POST Request Failed:', error);
-                    // Handle error, if necessary
                 });
         }
-
         function displayAppointments() {
             const appointmentList = document.getElementById('appointmentList');
             appointmentList.innerHTML = '';
 
-            // Get appointments from CrudCrud API
-            axios.get('  https://crudcrud.com/api/6d6baf5f8a634965a31c741c3ca46b5f/appointmentData')
+            axios.get('  https://crudcrud.com/api/52b399721e5d4fa1b6968ee150225822/appointmentData')
                 .then(response => {
                     const appointments = response.data;
-                    // Display each appointment in the list
                     appointments.forEach((appointment, index) => {
                         const listItem = document.createElement('li');
-                        listItem.textContent = `${appointment.name} - ${appointment.date} - ${appointment.time}`;
+                        listItem.textContent = `${appointment.name} - ${appointment.email} - ${appointment.number}`;
 
                         const deleteButton = document.createElement('button');
                         deleteButton.textContent = 'Delete';
                         deleteButton.onclick = () => deleteAppointment(appointment._id);
 
                         listItem.appendChild(deleteButton);
-                        //appointmentList.appendChild(listItem);
 
                         const editButton = document.createElement('button');
                         editButton.textContent = 'Edit';
@@ -85,54 +70,43 @@
 
                         listItem.appendChild(editButton);
                         appointmentList.appendChild(listItem);
+                        //listItem.appendChild(appointmentList);
+
                     });
                 })
                 .catch(error => {
                     console.error('GET Request Failed:', error);
-                    // Handle error, if necessary
                 });
         }
 
         function deleteAppointment(appointmentId) {
-            // Make a DELETE request to CrudCrud API
-            axios.delete(`  https://crudcrud.com/api/6d6baf5f8a634965a31c741c3ca46b5f/appointmentData/${appointmentId}`)
+            axios.delete(`  https://crudcrud.com/api/52b399721e5d4fa1b6968ee150225822/appointmentData/${appointmentId}`)
                 .then(response => {
-                    console.log('DELETE Request Successful:', response.data);
-                    // Update the displayed list of appointments
+                    console.log('DELETE Request Successful:', response);
                     displayAppointments();
                 })
                 .catch(error => {
                     console.error('DELETE Request Failed:', error);
-                    // Handle error, if necessary
                 });
         }
         function editAppointment(appointment) {
-            // Make a PUT request to CrudCrud API
             document.getElementById("name").value = appointment.name;
-            document.getElementById("date").value = appointment.date;
-            document.getElementById("time").value = appointment.time;
+            document.getElementById("email").value = appointment.email;
+            document.getElementById("number").value = appointment.number;
             const editingAppointmentId = appointment._id;
-           
+            const editingAppointmentId1 = appointment._id;
 
-            axios.put(`  https://crudcrud.com/api/6d6baf5f8a634965a31c741c3ca46b5f/appointmentData/${editingAppointmentId}`)
+            //deleteAppointment(editingAppointmentId1);
+            axios.delete(`  https://crudcrud.com/api/52b399721e5d4fa1b6968ee150225822/appointmentData/${editingAppointmentId}`)
                 .then(response => {
-                    // Populate form fields with existing values
-                    
-                    deleteAppointment(editingAppointmentId);
-
-            // Delete the user from the list
-            
                     console.log('PUT Request Successful:', response.data);
-                    // Update the displayed list of appointments
                     displayAppointments();
                 })
                 .catch(error => {
                     console.error('PUT Request Failed:', error);
-                    // Handle error, if necessary
                 });
         }
 
-        // Initial display of appointments
         displayAppointments();
     </script>
 </body>

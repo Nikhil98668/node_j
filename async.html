@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Appointment App</title>
+    
+</head>
+<body>
+    <h2>Booking Appointment App</h2>
+    <form >
+    <label for="name">Name:</label>
+    <input type="text" id="name" placeholder="Enter your name">
+
+    <label for="email">email:</label>
+    <input type="email" id="email">
+
+    <label for="number">Phone:</label>
+    <input type="number" id="number">
+
+    <button onclick="bookAppointment(event)">Book Appointment</button>
+    </form>
+    <div id="appointments">
+        <h3>Appointments</h3>
+        <ul id="appointmentList"></ul>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"></script>
+    <script>
+async function bookAppointment(event) {
+    try {
+        event.preventDefault();
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const number = document.getElementById('number').value;
+
+        const appointment = {
+            name: name,
+            email: email,
+            number: number
+        };
+
+        const response = await axios.post('https://crudcrud.com/api/52b399721e5d4fa1b6968ee150225822/appointmentData1', appointment);
+        console.log('POST Request Successful:', response);
+        await displayAppointments();
+    } catch (error) {
+        console.error('POST Request Failed:', error);
+    }
+}
+
+async function deleteAppointment(appointmentId) {
+    try {
+        const response = await axios.delete(`https://crudcrud.com/api/52b399721e5d4fa1b6968ee150225822/appointmentData1/${appointmentId}`);
+        console.log('DELETE Request Successful:', response);
+        await displayAppointments();
+    } catch (error) {
+        console.error('DELETE Request Failed:', error);
+    }
+}
+
+async function editAppointment(appointment) {
+    try {
+        document.getElementById("name").value = appointment.name;
+        document.getElementById("email").value = appointment.email;
+        document.getElementById("number").value = appointment.number;
+
+        const editingAppointmentId = appointment._id;
+        const response = await axios.delete(`https://crudcrud.com/api/52b399721e5d4fa1b6968ee150225822/appointmentData1/${editingAppointmentId}`);
+        console.log('PUT Request Successful:', response);
+        await displayAppointments();
+    } catch (error) {
+        console.error('PUT Request Failed:', error);
+    }
+}
+
+async function displayAppointments() {
+    try {
+        const appointmentList = document.getElementById('appointmentList');
+        appointmentList.innerHTML = '';
+
+        const response = await axios.get('https://crudcrud.com/api/52b399721e5d4fa1b6968ee150225822/appointmentData1');
+        const appointments = response.data;
+
+        appointments.forEach((appointment, index) => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${appointment.name} - ${appointment.email} - ${appointment.number}`;
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.onclick = () => deleteAppointment(appointment._id);
+
+            listItem.appendChild(deleteButton);
+
+            const editButton = document.createElement('button');
+            editButton.textContent = 'Edit';
+            editButton.onclick = () => editAppointment(appointment);
+
+            listItem.appendChild(editButton);
+            appointmentList.appendChild(listItem);
+        });
+    } catch (error) {
+        console.error('GET Request Failed:', error);
+    }
+}
+
+displayAppointments();
+</script>
+</body>
+</html>
