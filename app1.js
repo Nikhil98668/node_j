@@ -1,5 +1,7 @@
 
 const fs=require('fs');
+console.log("nikhil");
+
 const reqhandl= (req,res) => {
     const url = req.url;
     const method=req.method;
@@ -21,7 +23,7 @@ const reqhandl= (req,res) => {
         return req.on('end',()=>{
             const pars=Buffer.concat(body).toString();
             console.log(pars);
-            const p=pars.split("=")[1];
+            const p=pars.split("=")[0];
             //fs.writeFileSync('message.txt',p);
             fs.writeFile('message.txt',p, err => {
                 res.statusCode=302;
@@ -35,4 +37,5 @@ const reqhandl= (req,res) => {
         
     }
 }
-module.exports={r:reqhandl};
+//module.exports={r:reqhandl};
+module.exports.hand=reqhandl;
