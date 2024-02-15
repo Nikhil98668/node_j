@@ -7,15 +7,20 @@ const errorController = require('./controllers/error');
 
 const app = express();
 
-const db=require('./util/database');
+const sequelize=require('./util/database');
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
+sequelize.sync().then(result=>{
+    console.log(result);
+}).catch(err =>{
+    console.log(err);
+});
+
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
-db.execute('select * from products');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
