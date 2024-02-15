@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Appointment App</title>
+    
+</head>
+<body>
+    <h2>Booking Appointment App</h2>
+    <form id="appointmentForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" placeholder="Enter your name">
+
+        <label for="email">Email:</label>
+        <input type="email" id="email">
+
+        <label for="number">Phone:</label>
+        <input type="number" id="number">
+
+        <button type="submit">Book Appointment</button>
+    </form>
+    <div id="appointments">
+        <h3>Appointments</h3>
+        <ul id="appointmentList"></ul>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script>
+        document.getElementById('appointmentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const number = document.getElementById('number').value;
+            const appointment = {
+                name: name,
+                email: email,
+                number: number
+            };
+            axios.post('http://localhost:3000/user/add-user', appointment)
+                .then(response => {
+                    console.log('POST Request Successful:', response);
+                    displayAppointments();
+                })
+                .catch(error => {
+                    console.error('POST Request Failed:', error);
+                });
+        });
+
+        function displayAppointments() {
+            const appointmentList = document.getElementById('appointmentList');
+            appointmentList.innerHTML = '';
+
+            axios.get('/api/users')
+                .then(response => {
+                    const appointments = response.data;
+                    appointments.forEach((appointment, index) => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${appointment.name} - ${appointment.email} - ${appointment.number}`;
+
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Delete';
+                        deleteButton.onclick = () => deleteAppointment(appointment.id);
+
+                        listItem.appendChild(deleteButton);
+
+                        const editButton = document.createElement('button');
+                        editButton.textContent = 'Edit';
+                        editButton.onclick = () => editAppointment(appointment);
+
+                        listItem.appendChild(editButton);
+                        appointmentList.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('GET Request Failed:', error);
+                });
+        }
+
+        function deleteAppointment(appointmentId) {
+            axios.delete(`/api/users/${appointmentId}`)
+                .then(response => {
+                    console.log('DELETE Request Successful:', response);
+                    displayAppointments();
+                })
+                .catch(error => {
+                    console.error('DELETE Request Failed:', error);
+                });
+        }
+
+        function editAppointment(appointment) {
+            document.getElementById('name').value = appointment.name;
+            document.getElementById('email').value = appointment.email;
+            document.getElementById('number').value = appointment.number;
+        }
+
+        displayAppointments();
+    </script>
+</body>
+</html>
