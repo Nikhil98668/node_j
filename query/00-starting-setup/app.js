@@ -4,6 +4,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const Product = require('./models/product');
 const User = require('./models/user');
+const Cart=require('./models/cart');
+const CartItem=require('./models/cart-item'); 
 
 
 const errorController = require('./controllers/error');
@@ -17,12 +19,24 @@ app.set('views', 'views');
 
 Product.belongsTo(User,{constraints: true,onDelete:'CASCADE'});
 User.hasMany(Product);
+User.hasOne(Cart);
+Cart.belongsTo(User);
+Cart.belongsToMany(Product,{through:CartItem});
+Product.belongsToMany(Cart,{through:CartItem});
 
 
-sequelize.sync().then(result=>{
+
+
+sequelize.sync()
+.then(result=>{
     return User.findById(1);
     console.log(result);
-}).catch(err =>{
+})
+.then(user =>{
+   return user.createCart();
+     
+})
+.catch(err =>{
     console.log(err);
 });
 

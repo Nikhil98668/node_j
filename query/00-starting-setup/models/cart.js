@@ -1,4 +1,4 @@
-const fs=require('fs');
+/*const fs=require('fs');
 const path=require('path');
 const { deleteProducts } = require('../controllers/admin');
 
@@ -59,4 +59,18 @@ static deleteProduct(id,price)
 
 
 
-}
+}*/
+const Sequalize= require('sequelize');
+
+const sequalize = require('../util/database');
+
+const Cart=sequalize.define('cart',{
+    id:{
+        type: Sequalize.INTEGER,
+        autoIncrement:true,
+        allowNull:false,
+        primaryKey:true
+    }
+
+});
+module.exports=Cart;

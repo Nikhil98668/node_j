@@ -57,19 +57,60 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  res.render('shop/cart', {
+  /*res.render('shop/cart', {
     path: '/cart',
     pageTitle: 'Your Cart'
-  });
+  });*/
+  
+    req.user.getCart().then(cart =>{
+      console.log(cart);
+      return cart.getProducts(),then(products => {
+        res.render('shop/cart', {
+          path: '/cart',
+          pageTitle: 'Your Cart',
+          products: cartProducts
+      })}).catch(err => console.log(err));
+
+
+    });
+
+
 };
 
 exports.postCart = (req,res,next)=> {
   const prodId=req.body.productId;
   //console.log(prodId);
-  Product.findById(prodId,(product)=>{
+ /* Product.findById(prodId,(product)=>{
       Cart.addProduct(prodId,product.price);
   });
-  res.redirect('/cart');
+  res.redirect('/cart');*/
+  let fetchhedCart;
+    req.user.getCart()
+    .then(cart =>{
+      fetchedCart = cart;
+      return cart.getProducts({where: {id : prodId}})
+    })
+    .then(products => {
+      let product;   
+      if(products.length > 0)
+      {
+        product=products[0];
+      }
+      let newQuantity =1;
+      if(product)
+      {
+        const oldQuantity = product.cartItem.quantity;
+        newQuantity=oldQuantity+1;
+        return fetchhedCart.addProduct(product,{
+          through : {quantity :newQuantity }
+        });
+      }
+      return Product.findById(prodId).then(product => {
+        return fetchedCart.addProduct(product,{ through : {quantity :newQuantity } })
+      }).catch(err => console.log(err));
+    })
+    .catch(err => console.log(err));
+
 };
 
 exports.getOrders = (req, res, next) => {
@@ -84,4 +125,17 @@ exports.getCheckout = (req, res, next) => {
     path: '/checkout',
     pageTitle: 'Checkout'
   });
+};
+exports.postCartDeleteProducts = (req,res,next) =>{
+const prodId=req.body.productId;
+req.user.getCart().then(cart => {
+  return cart.getProducts({ where: {id :prodId}});
+})
+.then(products=>{
+  const product=products[0];
+  product.cartItem.destroy();
+})
+.then(result=>{
+  res.redirect('/cart');
+})
 };
