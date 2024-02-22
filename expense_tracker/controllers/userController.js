@@ -13,7 +13,7 @@ function isNotValidInput(string){
 const createNewUserController = async (req, res) => {
     try {
       const { name, email, password } = req.body;
-      if(isNotValidInput(name)&&isNotValidInput(email)&&isNotValidInput(password)) {
+      if(isNotValidInput(name)||isNotValidInput(email)||isNotValidInput(password)) {
         return res.status(400).json({ message: "All fields are mandatory" });
       } else {
         const hashedPswd = await bcrypt.hash(password, 10);
@@ -32,5 +32,33 @@ const createNewUserController = async (req, res) => {
       return res.status(500).json({ message: err });
     }
   };
-  module.exports = {createNewUserController};
+  
+  const authenticateUserController = async(req, res) => {
+    try {
+      const { email, password } = req.body;
+      if(isNotValidInput(email)||isNotValidInput(password)) {
+        return res.status(400).json({ message: "All fields are mandatory" ,success:false});
+      }
+      const user = await UserModel.findOne({ where: { email } });
+      if (user) {
+         bcrypt.compare(password, user.password, (hasherr, hashresponse) => {
+          if(hasherr){
+            throw new Error("Something went wrong in authentication");
+          }
+          if (hashresponse === true) {        
+            return res.status(200).json({ success:true,message: "User logged in successfully", token: generateAccessToken(user.id, user.name, user.ispremiumuser) });
+          } 
+          else if(hashresponse === false) {
+            return res.status(401).json({ message: "User not authorized. Password Incorrect." });
+          }
+        });
+      } else {
+        return res.status(404).json({ message: "User not found" });
+      }
+    } catch (error) {
+      return res.status(500).json({ error });
+    }
+  };
+
+  module.exports = {createNewUserController,authenticateUserController};
   
