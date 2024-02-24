@@ -6,34 +6,30 @@ const {uploadToS3} = require('../services/awsS3service')
 
 
 const getLeadersData = async (req, res) => {
-  try {
-    const leadersExpenses = await User.findAll({
-      attributes: [
-        "name",
-        [
-          sequelize.fn(
-            "coalesce",
-            sequelize.fn("SUM", sequelize.col("user_expenses_tbs.amount")),
-            0
-          ),
-          "aggregate_amount",
-        ],
-      ],
-      include: [
-        {
-          model: Expense,
-          attributes: [],
-          required: false,
-        },
-      ],
-      group: ["users_tb.id"],
-      order: [[sequelize.literal("aggregate_amount"), "DESC"]],
-    });
-    res.json(leadersExpenses);
-  } catch (err) {
-    console.log("Error in fetching leaders data, error: ", JSON.stringify(err));
-    res.status(500).json(err.message);
-  }
+    try {
+        const leadersExpenses = await User.findAll({
+            attributes: [
+                "id",
+                "name",
+                [sequelize.fn("coalesce", sequelize.fn("SUM", sequelize.col("ExpenseTrackerModels.amount")), 0), "aggregate_amount"],
+            ],
+            include: [
+                {
+                    model: Expense,
+                    as: "ExpenseTrackerModels", 
+                    attributes: [], 
+                    required: false,
+                },
+            ],
+            group: ["usermodels.id", "usermodels.name"], // Corrected group by usermodels.id and usermodels.name
+            order: [[sequelize.literal("aggregate_amount"), "DESC"]],
+        });
+        res.json(leadersExpenses);
+    } catch (err) {
+        console.log("Error in fetching leaders data, error: ", err);
+        res.status(500).json(err.message);
+    }
+    
 };
 
 

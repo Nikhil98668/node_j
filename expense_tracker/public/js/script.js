@@ -386,3 +386,85 @@ function awakeDeletedAlert(){
         document.getElementById("deletion-alert").classList.toggle("hidden");
       }, 1500);
 }
+
+
+let tableVisible = false;
+function showLeaderBoard(){
+  document.getElementById('downloadReportBtn').classList.remove('hidden');
+
+  var inputBtnElement = document.createElement("button")
+  inputBtnElement.type = "button"
+  inputBtnElement.id = "leaderbtn"
+  inputBtnElement.innerText = "Show LeaderBoard"
+  inputBtnElement.className = "rounded-lg py-2  bg-[#3ebc96] text-white max-w-full px-8 hover:scale-105 duration-300 hover:bg-[#0d5f49] cursor-pointer"
+  
+  inputBtnElement.onclick = async() =>{
+    try{
+    const token = localStorage.getItem('token')
+    const leaderBoardData = await axios.get(`${publicIp}/premium/showLeaderBoard`,{headers:{"Authorization": token}});
+        
+    var leaderBoardElement = document.getElementById("addedLeaderBoardlist")
+  
+  if(!tableVisible){
+    document.getElementById("leaderBoardTable").classList.toggle("hidden");
+    leaderBoardData.data.forEach(leadersDetails => {
+       leaderBoardElement.innerHTML += `<tr class=" text-sm hover:bg-gray-100">
+          <td class="py-2 px-3 border-b border-gray-400">${leadersDetails.name}</td>
+          <td class="py-2 px-3 border-b border-gray-400"><span class="font-bold">&#x20b9; </span>${leadersDetails.aggregate_amount}</td>
+        </tr>`
+    });;
+    tableVisible = true;
+  }
+  else{
+    document.getElementById("leaderBoardTable").classList.toggle("hidden");
+      leaderBoardElement.innerHTML = "";
+      tableVisible = false;
+  }
+  }
+  catch(error){
+    console.log(error)
+    throw new Error(error)
+  }
+}
+  document.getElementById("leaderBtnHolder").appendChild(inputBtnElement);
+}
+
+
+//previous downloads
+let downloadsView = false; 
+function showDownloadsHistory(){
+  var downloadsHistBtn = document.createElement("button")
+  downloadsHistBtn.type = "button"
+  downloadsHistBtn.id = "downloadshistbtn"
+  downloadsHistBtn.innerText = "Downloaded Reports"
+  downloadsHistBtn.className = "rounded-lg py-2  bg-[#3ebc96] text-white font-semibold  px-3 hover:scale-105 duration-300 m-1 hover:bg-[#0d5f49] cursor-pointer"
+  
+  downloadsHistBtn.onclick = async() =>{
+    try{
+    const token = localStorage.getItem('token')
+    const prevDownloadsData = await axios.get(`${publicIp}/premium/showPrevDownloads`,{headers:{"Authorization": token}});
+       var downloadedElement = document.getElementById("addedDownloadlist")
+  if(!downloadsView){
+    document.getElementById("downloadsTable").classList.toggle("hidden");
+    prevDownloadsData.data.prevDownloads.forEach(downloadsDetail => {
+      const d = new Date(`${downloadsDetail.createdAt}`);
+      downloadedElement.innerHTML += `<tr class=" text-sm hover:bg-gray-100">
+          <td class="py-2 px-3 border-b border-gray-400"><a href='${downloadsDetail.fileUrl}'>${d.toUTCString()}</a></td>
+        </tr>`
+    });
+    downloadsView = true;
+  }
+  else{
+    document.getElementById("downloadsTable").classList.toggle("hidden");
+    downloadedElement.innerHTML = "";
+      downloadsView = false;
+  }
+  }
+  catch(error){
+    console.log(error)
+    throw new Error(error)
+  }
+}
+  document.getElementById("leaderBtnHolder").appendChild(downloadsHistBtn);
+}
+
