@@ -1,16 +1,9 @@
-const { Sequelize } = require('sequelize');
+const Sequelize = require('sequelize')
 
-const sequelize = new Sequelize('expense', 'root', 'W7301@jqir#', {
-    host: 'localhost',
-    dialect: 'mysql'
-});
-(async () => {
-    try {
-        await sequelize.sync();
-        console.log('Database synchronized');
-    } catch (error) {
-        console.error('Error synchronizing database:', error);
-    }
-})();
+const sequelize = new Sequelize(process.env.DB_DATABASE,process.env.DB_USERNAME,process.env.DB_PASSWORD,{
+    dialect: 'mysql',
+    logging: true,     
+    host:process.env.DB_HOST
+});      
 
 module.exports = sequelize;
