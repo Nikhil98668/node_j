@@ -1,5 +1,7 @@
 const UserModel = require("../model/usersModel");
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 function isNotValidInput(string){
   if(string==undefined || string.length==0){
@@ -21,7 +23,7 @@ const createNewUserController = async (req, res) => {
         await UserModel.create({
           name,
           email,
-          password:hashedPswd
+          password:hashedPswd,
         });
         return res.status(201).json({ UserAddedResponse: "Successfuly created new user.!" });
       }
@@ -32,7 +34,14 @@ const createNewUserController = async (req, res) => {
       return res.status(500).json({ message: err });
     }
   };
+
+  const generateAccessToken = (id,name,ispremiumuser)=>{
+    return jwt.sign({userId:id, name:name, ispremiumuser},'12346nbjjg')
+  }
   
+  
+  
+  //Login Page Controller
   const authenticateUserController = async(req, res) => {
     try {
       const { email, password } = req.body;
@@ -59,6 +68,8 @@ const createNewUserController = async (req, res) => {
       return res.status(500).json({ error });
     }
   };
-
-  module.exports = {createNewUserController,authenticateUserController};
   
+  module.exports ={ createNewUserController ,
+    generateAccessToken  ,
+    authenticateUserController
+  }
