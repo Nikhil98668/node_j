@@ -11,7 +11,9 @@ let updateexpensebtn = document.getElementById("updateexpensebtn");
 
 window.addEventListener("DOMContentLoaded",async ()=>{
   try{
-      const token = localStorage.getItem('token')
+      
+    const token = localStorage.getItem('token')
+
       const tokenDecoded = parseJwt(token);
       const premiumMember = tokenDecoded.ispremiumuser;
       let expenseList=null;
@@ -270,6 +272,10 @@ async function deleteexpense(expId) {
       document.querySelector('#error-alert').classList.toggle("hidden")
     }
 }
+function premiumUserMsg(){
+  document.getElementById("buyPremiumBtn").remove();
+  document.getElementById("memtype").innerText = "Premium Member";
+}
 
 
 
@@ -290,7 +296,7 @@ document.getElementById("buyPremiumBtn").addEventListener("click", async functio
           order_id: paymentcreds.order_id,
           payment_id: response.razorpay_payment_id,
         }, { headers: {"Authorization": token } });
-        
+        //alert('Your Premium Membership is now active'); 
         premiumUserMsg();
         alert('Your Premium Membership is now active'); 
         localStorage.setItem('token',res.data.token)
