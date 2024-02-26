@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Table</title>
+</head>
+<body>
+    <h2>Create Table</h2>
+    <form id="tableForm">
+        <label for="tableName">Table Name:</label>
+        <input type="text" id="tableName" required>
+        <div id="fieldsContainer"></div>
+        <button type="button" onclick="addField()">Add Field</button>
+        <button type="submit">Create Table</button>
+    </form>
+
+    <script>
+        function addField() {
+            const fieldsContainer = document.getElementById('fieldsContainer');
+            const newField = `
+                <div>
+                    <label for="fieldName">Field Name:</label>
+                    <input type="text" name="fieldName" required>
+                    <label for="fieldType">Field Type:</label>
+                    <input type="text" name="fieldType" required>
+                    <label for="isPrimaryKey">Primary Key:</label>
+                    <input type="checkbox" name="isPrimaryKey">
+                </div>
+            `;
+            fieldsContainer.insertAdjacentHTML('beforeend', newField);
+        }
+
+        document.getElementById('tableForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const tableName = document.getElementById('tableName').value;
+            const fields = Array.from(document.querySelectorAll('#fieldsContainer > div')).map(field => {
+                const fieldName = field.querySelector('input[name="fieldName"]').value;
+                const fieldType = field.querySelector('input[name="fieldType"]').value;
+                const isPrimaryKey = field.querySelector('input[name="isPrimaryKey"]').checked;
+                let fieldDefinition = `${fieldName} ${fieldType}`;
+                if (isPrimaryKey) {
+                    fieldDefinition += ' PRIMARY KEY';
+                }
+                return fieldDefinition;
+            });
+
+            fetch('/createTable', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    tableName,
+                    fields: fields.join(',')
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '/index1.html';
+                } else {
+                    throw new Error('Failed to create table');
+                }
+            })
+            .catch(error => console.log('Error creating table:', error));
+        });
+    </script>
+</body>
+</html>

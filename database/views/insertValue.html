@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insert Values</title>
+</head>
+<body>
+    <h2>Insert Values</h2>
+    <form id="insertForm">
+        <label for="tableName">Select Table:</label>
+        <select id="tableNameSelect" required>
+            <!-- Table names will be populated dynamically -->
+        </select>
+        <div id="fieldsContainer"></div>
+        <button type="submit">Insert Values</button>
+    </form>
+
+    <script>
+        function populateTableNames() {
+            fetch('/tableNames', {
+                method: 'GET'
+            })
+            .then(response => response.json())
+            .then(data => {
+                const tableNameSelect = document.getElementById('tableNameSelect');
+                data.forEach(tableName => { 
+                    const option = document.createElement('option');
+                    option.value = tableName;
+                    option.textContent = tableName;
+                    tableNameSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.log('Error fetching table names:', error));
+        }
+
+        function addFields(fieldNames) {
+            const fieldsContainer = document.getElementById('fieldsContainer');
+            fieldsContainer.innerHTML = '';
+
+            fieldNames.forEach(fieldName => {
+                const label = document.createElement('label');
+                label.textContent = `${fieldName}:`;
+                const input = document.createElement('input');
+                input.setAttribute('type', 'text');
+                input.setAttribute('name', fieldName);
+                fieldsContainer.appendChild(label);
+                fieldsContainer.appendChild(input);
+            });
+        }
+
+        document.getElementById('tableNameSelect').addEventListener('change', function() {
+            const tableName = this.value;
+
+            fetch(`/getFields?tableName=${tableName}`)
+            .then(response => response.json())
+            .then(data => {
+                const fieldNames = data.fields.map(field => field.Field);
+                addFields(fieldNames);
+            })
+            .catch(error => console.log('Error fetching fields:', error));
+        });
+
+        document.getElementById('insertForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(this);
+            const values = {};
+            for (let [key, value] of formData.entries()) {
+                values[key] = value;
+            }
+
+            fetch('/insertValues', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    tableName: document.getElementById('tableNameSelect').value,
+                    values
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.message);
+                alert('Values inserted successfully!');
+            })
+            .catch(error => console.log('Error inserting values:', error));
+        });
+
+        populateTableNames();
+    </script>
+</body>
+</html>

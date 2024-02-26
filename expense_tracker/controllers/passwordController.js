@@ -6,7 +6,7 @@ const nodemailer = require('nodemailer');
 const uuid = require('uuid');
 
 
-//FORGET PASSWORD FORM CONTROLLER ---SEND MAIL
+
 const forgotPassword =  async (req, res)=> {
         const { email } = req.body;
         try {
@@ -18,7 +18,7 @@ const forgotPassword =  async (req, res)=> {
             const id=uuid.v4()
             const addForget = await ForgotModel.create({id,active:true,usersTbId:user.dataValues.id})
             if(addForget){
-                  // gmail auth ====================
+                  // gmail auth 
             const transporter = nodemailer.createTransport({
                 service:'gmail',
                 auth: {

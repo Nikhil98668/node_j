@@ -1,4 +1,4 @@
- const publicIp='http://localhost:4000';
+ const publicIp='http://localhost:3000';
 //const publicIp='http://3.109.143.245:4000';
 
 
@@ -15,6 +15,7 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
   else{
     const obj={email,password}
     const response =await axios.post(`${publicIp}/user/login`, obj);
+    //window.location.href = "../view/home.html";
     if (response.status === 200 && response.data.token!=='' && response.data.token!== undefined) {
       alert(response.data.message);
       localStorage.setItem('token',response.data.token)

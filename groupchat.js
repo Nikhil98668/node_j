@@ -39,6 +39,24 @@ app.post('/login', (req, res) => {
     const messages = fs.readFileSync('messages.txt', 'utf8');
     res.send(messages);
   });
+  // Express routes
+app.get('/contactus', (req, res) => {
+    res.sendFile(__dirname + '/contactus.html');
+});
+
+app.post('/contactus', (req, res) => {
+    // Process form submission (save name and email)
+    // Redirect to success page
+    res.redirect('/success');
+});
+
+app.get('/success', (req, res) => {
+    res.send('Form successfully filled');
+});
+app.use((req, res) => {
+    res.status(404).render('404');
+  });
+
 
 
 
