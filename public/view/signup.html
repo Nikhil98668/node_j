@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="../icons8-consumption-96.png">
+  <title>Expense Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;700&family=Kavoon&family=Metal+Mania&family=Poppins:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    /* Additional CSS styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f3f4f6;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    .header {
+      background-color: #65beb2c1;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header img {
+      width: 60px;
+      height: 50px;
+      margin-left: 20px;
+    }
+
+    .header .title {
+      font-family: 'Kavoon', cursive;
+      font-size: 30px;
+      color: #002D74;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      font-weight: 600;
+      color: #002D74;
+    }
+
+    input[type='text'],
+    input[type='email'],
+    input[type='password'] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #002D74;
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #001d4e;
+    }
+
+    .signup-link {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .signup-link a {
+      color: #002D74;
+    }
+
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+
+    .alert {
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
+
+    .error-alert {
+      background-color: #ff9999;
+      color: #990000;
+    }
+
+    .success-alert {
+      background-color: #99ff99;
+      color: #006600;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- header -->
+  <div class="header">
+    <img src="../icons8-consumption-96.png" alt="Header Image" />
+    <div class="title">Expense Tracker</div>
+  </div>
+
+  <!-- error alert -->
+  <div id="errorAlert" class="alert error-alert hidden text-base  text-center" role="alert"></div>
+
+  <!-- success alert-->
+  <div id="successAlert" class="alert success-alert hidden text-base  text-center" role="alert"></div>
+
+  <!-- SignUp Form -->
+  <div class="container">
+    <form id="signup-form" method="POST" action="/user/signup">
+
+      <label for="nameInput">Full Name</label>
+      <input id="nameInput" name="nameInput" type="text" placeholder="Enter Full Name" required>
+
+      <label for="emailInput">Email</label>
+      <input id="emailInput" name="emailInput" type="email" placeholder="Enter email" required>
+
+      <label for="passwordInput">Password</label>
+      <input id="passwordInput" name="passwordInput" type="password" required>
+
+      <button id="signupBtn" type="submit">Sign Up</button>
+
+      <div class="signup-link">
+        <p>Already have an account? <a href="./login.html">Login</a></p>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Javascript -->
+  <script src="../js/signup.js"></script>
+  <script src="../js/axios.js"></script>
+
+</body>
+
+</html>
