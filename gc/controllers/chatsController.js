@@ -1,7 +1,7 @@
 const Chats = require('../models/chatsModel');
 
 
-//@desc:  Get All Chats
+
 exports.getAllChats = async (req, res) => {
   try {
     const response = await Chats.findAll({
@@ -15,7 +15,7 @@ exports.getAllChats = async (req, res) => {
 
 
 
-//@desc: To Post/Store Chats
+
 exports.postChat = async (req, res) => {
   try {
     const chat = await Chats.create({

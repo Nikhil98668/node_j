@@ -3,7 +3,7 @@ const Users = require('../models/usersModel')
 const { Op } = require("sequelize")
 
 
-//@desc: Load group list user is memberOf to screen
+
 exports.findGroups = async (req, res) => {
     try {
         const groups = await Groups.findAll();
@@ -18,7 +18,7 @@ exports.findGroups = async (req, res) => {
 };
 
 
-//@desc: create new group if not exists
+
 exports.createGroup = async (req, res, next) => {
     try {
         const members = req.body.members.map(member => parseInt(member));
@@ -46,7 +46,7 @@ exports.createGroup = async (req, res, next) => {
 };
 
 
-//@desc: Getting Group Profile Details:
+
 exports.getGroupProfileDesc = async (req, res) => {
     try {
         const group = await Groups.findOne({ where: { id: req.query.groupId } });
@@ -71,7 +71,7 @@ exports.getGroupProfileDesc = async (req, res) => {
 }
 
 
-//@desc: remove/Exit user from group
+
 exports.removeUserFromGroup = async (req, res) => {
     try {
         const { groupid, targetUserId } = req.body;
@@ -99,7 +99,7 @@ exports.removeUserFromGroup = async (req, res) => {
 }
 
 
-//@desc: make user Admin
+
 exports.makeAdmin = async (req, res) => {
     try {
         const { groupid, targetUserId } = req.body;
@@ -116,7 +116,7 @@ exports.makeAdmin = async (req, res) => {
 };
 
 
-//@desc: revoke user's Admin power
+
 exports.removeAsAdmin = async (req, res) => {
     try {
         const { groupid, targetUserId } = req.body;
@@ -133,7 +133,7 @@ exports.removeAsAdmin = async (req, res) => {
 };
 
 
-//@desc: to Add more user(non-members) PopUp 
+
 exports.addUsersToGroup = async (req, res) => {
     try {
         const group = await Groups.findOne({ where: { id: req.query.groupId }, attributes: ['members'] });
@@ -154,7 +154,7 @@ exports.addUsersToGroup = async (req, res) => {
 };
 
 
-//@updating members in Group by admin
+
 exports.updateGroupsMembers = async (req, res) => {
     try {
         const { id, newmembers } = req.body;
