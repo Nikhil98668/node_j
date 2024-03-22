@@ -1,5 +1,5 @@
 const publicIp='http://localhost:3000';
-//const publicIp='http://3.109.143.245:4000';
+//const publicIp='http://16.170.219.126:3000';
 
 
 let addexpenseinput = document.getElementById("addexpenseinput");

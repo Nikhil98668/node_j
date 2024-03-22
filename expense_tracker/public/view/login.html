@@ -10,10 +10,64 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;700&family=Kavoon&family=Metal+Mania&family=Poppins:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
+    <style>
+         
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #613d52;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    .header {
+      background-color: #65beb2c1;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header img {
+      width: 60px;
+      height: 50px;
+      margin-left: 20px;
+    }
+
+    .header .title {
+      font-family: 'Kavoon', cursive;
+      font-size: 30px;
+      color: #080808;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #9db662;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      font-weight: 600;
+      color: #bd0817;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color:orange;
+      color: #0dc907;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    </style>
 </head>
 
 <body>
-    <!-- header -->
+   
   <div class=" flex items-center  w-screen mx-auto mb-5 bg-[#65beb2c1] rounded-md">
     <div class="w-1/2 flex items-center gap-3 py-2">
         <img src="../icons8-consumption-96.png" class="h-[50px] w-[60px] p-2 ml-6" alt="Header Image" />        
@@ -25,16 +79,16 @@
   
 
 
-    <!-- error alert -->
+    
     <div id="errorAlert" class="bg-red-700 rounded-lg p-2 hidden text-base  text-center" role="alert">
     </div>
 
-    <!-- success alert-->
+    
     <div id="successAlert" class="bg-green-700 rounded-lg p-2 hidden text-base  text-center" role="alert">
     </div>
 
 
-    <!-- Login Form -->
+    
     <div class=" grid place-items-center mt-[10vh]">
       
         <div class="w-full max-w-sm bg-gray-200 rounded-2xl shadow-lg p-[32px] pt-[14px]">

@@ -1,75 +1,93 @@
-const UserModel = require("../model/usersModel");
+const User = require("../model/usersModel");
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-function isNotValidInput(string){
-  if(string==undefined || string.length==0){
-      return true;
+
+
+function isNotValidInput(string) {
+  if (string == undefined || string.length == 0) {
+    return true;
   }
-  else{
-      return false;
+  else {
+    return false;
   }
 }
 
-const createNewUserController = async (req, res) => {
-    try {
-      const { name, email, password } = req.body;
-      if(isNotValidInput(name)||isNotValidInput(email)||isNotValidInput(password)) {
-        return res.status(400).json({ message: "All fields are mandatory" });
-      } else {
-        const hashedPswd = await bcrypt.hash(password, 10);
-        console.log("hi");
-        await UserModel.create({
-          name,
-          email,
-          password:hashedPswd,
-        });
-        return res.status(201).json({ UserAddedResponse: "Successfuly created new user.!" });
-      }
-    } catch (err) {
-      if (err.name === "SequelizeUniqueConstraintError") {
-        return res.status(409).json({message:"Email id already exists. Please Login or change the Email id."});
-      }
-      return res.status(500).json({ message: err });
-    }
-  };
 
-  const generateAccessToken = (id,name,ispremiumuser)=>{
-    return jwt.sign({userId:id, name:name, ispremiumuser},'12346nbjjg')
+//Signup Page Controller
+const createNewUserController = async (req, res) => {
+try{
+  const { name, email, password } = req.body;
+  if (isNotValidInput(name) || isNotValidInput(email) || isNotValidInput(password)) {
+    return res.status(400).json({ message: "All fields are mandatory" });
   }
-  
-  
-  
-  //Login Page Controller
-  const authenticateUserController = async(req, res) => {
-    try {
-      const { email, password } = req.body;
-      if(isNotValidInput(email)||isNotValidInput(password)) {
-        return res.status(400).json({ message: "All fields are mandatory" ,success:false});
+  else{
+const isExistingUser= await User.findOne({email})
+      if(isExistingUser){
+        return res.status(200).send({
+        success: true,
+        message: "Email Id already registered. Please Login",
+      });
       }
-      const user = await UserModel.findOne({ where: { email } });
-      if (user) {
-         bcrypt.compare(password, user.password, (hasherr, hashresponse) => {
-          if(hasherr){
-            throw new Error("Something went wrong in authentication");
-          }
-          if (hashresponse === true) {        
-            return res.status(200).json({ success:true,message: "User logged in successfully", token: generateAccessToken(user.id, user.name, user.ispremiumuser) });
-          } 
-          else if(hashresponse === false) {
-            return res.status(401).json({ message: "User not authorized. Password Incorrect." });
-          }
-        });
-      } else {
-        return res.status(404).json({ message: "User not found" });
-      }
-    } catch (error) {
-      return res.status(500).json({ error });
+      const hashedPswd = await bcrypt.hash(password, 10);
+      await User.create({
+        name,
+        email,
+        password: hashedPswd,
+      });
+      return res.status(201).json({ UserAddedResponse: "Successfuly created new user.!" });
     }
-  };
-  
-  module.exports ={ createNewUserController ,
-    generateAccessToken  ,
-    authenticateUserController
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({
+      success: false,
+      message: "Error in Registration",
+      err,
+    });
   }
+};
+
+
+
+
+const generateAccessToken = (id, name, ispremiumuser) => {
+  return jwt.sign({ userId: id, name: name, ispremiumuser }, process.env.JWT_SECRET_KEY)
+}
+
+
+
+
+const authenticateUserController = async (req, res) => {
+  const { email, password } = req.body;
+  if (isNotValidInput(email) || isNotValidInput(password)) {
+    return res.status(400).json({ message: "All fields are mandatory", success: false });
+  }
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+       bcrypt.compare(password, user.password, (hasherr, hashresponse) => {
+        if(hasherr){
+          throw new Error("Something went wrong in authentication");
+        }
+        if (hashresponse === true) {        
+          return res.status(200).json({ success:true,message: "User logged in successfully", token: generateAccessToken(user._id, user.name, user.ispremiumuser) });
+        } 
+        else if(hashresponse === false) {
+          return res.status(401).json({ message: "User not authorized. Password Incorrect." });
+        }
+      });
+    } else {
+      return res.status(401).json({ message: "User not Registered" });
+    }
+  } catch (error) {
+    return res.status(500).json({ error });
+  }
+};
+
+
+module.exports = {
+  createNewUserController,
+  generateAccessToken,
+  authenticateUserController
+}

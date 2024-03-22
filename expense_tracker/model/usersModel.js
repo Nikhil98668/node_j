@@ -1,4 +1,44 @@
-const Sequelize = require('sequelize')
+const mongoose = require("mongoose");
+
+const userSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true, trim: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    ispremiumuser: { type:Boolean, default: false },
+    totalExpense:{type:Number,required:true,default:0}
+  },
+  { timestamps: true }
+);
+
+
+const User = mongoose.model("User", userSchema);
+
+module.exports = User;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*const Sequelize = require('sequelize')
 const sequelize = require('../utils/database')
 
 const UserModel = sequelize.define('usermodels',{
@@ -28,4 +68,4 @@ const UserModel = sequelize.define('usermodels',{
 })
 
   
-module.exports = UserModel;
+module.exports = UserModel;*/

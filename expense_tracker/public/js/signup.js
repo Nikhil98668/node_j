@@ -1,5 +1,5 @@
 const publicIp='http://localhost:3000';
-//const publicIp='http://3.109.143.245:4000';
+//const publicIp='http://16.170.219.126:3000';
 
 
 document.getElementById("signup-form").addEventListener("submit", (e) => {
@@ -17,7 +17,7 @@ document.getElementById("signup-form").addEventListener("submit", (e) => {
 
 
 
-// function to request post data to db
+
 async function addNewUser(name, email, password) {
   try {
     const obj = { name, email, password };
@@ -38,7 +38,7 @@ async function addNewUser(name, email, password) {
 
 
 
-// function to awake/sleep alert
+
 function alertAwakeSleep() {
   document.querySelector("#errorAlert").classList.toggle("hidden");
   setTimeout(function () {

@@ -7,70 +7,68 @@ const uuid = require('uuid');
 
 
 
-const forgotPassword =  async (req, res)=> {
-        const { email } = req.body;
-        try {
-        const user = await User.findOne({ where: { email } });
+
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const user = await User.findOne({email});
         if (!user) {
             return res.status(404).json({ message: 'User not Exists..Please Signup or enter correct email id.' });
         }
-        else{
-            const id=uuid.v4()
-            const addForget = await ForgotModel.create({id,active:true,usersTbId:user.dataValues.id})
-            if(addForget){
-                  // gmail auth 
-            const transporter = nodemailer.createTransport({
-                service:'gmail',
-                auth: {
-                    user: process.env.EMAIL,
-                    pass: process.env.EMAIL_PASSWORD
-                }
-            })
-            const msg = {
-                from: process.env.EMAIL,
-                to: email,
-                subject:'Reset your ExpenseTracker Password',
-                html: `
-                    <p>You are receiving this email because you (or someone else) have requested the reset of the password for your account.</p>
-                    <p>Please click on the following link, or paste this into your browser to complete the process:</p>
-                    <p><a href="http://3.109.143.245:4000/password/resetpassword/${id}">Click here to Reset password</a></p>
-                    <p>If you did not request this, please ignore this email and your password will remain unchanged.</p>
+        else {
+            // const id = uuid.v4()
+            const addForget = await ForgotModel.create({  active: true, usersTbId: user._id })
+            let id=addForget._id;
+            if (addForget) {
+                // gmail auth ====================
+                const transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: process.env.EMAIL,
+                        pass: process.env.EMAIL_PASSWORD
+                    }
+                })
+                const msg = {
+                    from: process.env.EMAIL,
+                    to: email,
+                    subject: 'Reset your ExpenseTracker Password',
+                    html: `
+                   
+                    <p><a href="http://localhost:4000/password/resetpassword/${id}">Click here to Reset password</a></p>
+                    
                     `
-              }
-            await transporter.sendMail(msg, function(err,info){
-                if(err){
-                    return console.log("Error occured in sending mail..",err);
                 }
-                else{
-                    console.log("Email sent successfully")
-                }
-            }) 
-             // gmail auth ====================
-
-                  return res.status(202).json({message: 'Reset intiated email sent...Please Reset Passowrd using link in mail. ', sucess: true})
+                await transporter.sendMail(msg, function (err, info) {
+                    if (err) {
+                        return console.log("Error occured in sending mail..", err);
+                    }
+                    else {
+                        console.log("Email sent successfully")
+                    }
+                })
+                
+                return res.status(202).json({ message: 'Reset intiated email sent...Please Reset Passowrd using link in mail. ', sucess: true })
             }
-            else{
-               throw new Error('Error in updating forget table')
-           }                      
+            else {
+                throw new Error('Error in updating forget table')
+            }
         }
     }
-    catch(err){
+    catch (err) {
         return res.json({ message: "Reset link not send", sucess: false });
     }
 }
 
 
 
-//RESET LINK FORM METHOD VERIFY AND FIRE EVENT UPDATE
+
 const resetPassword = async (req, res) => {
-    const id =  req.params.id;
-    const validUser = await ForgotModel.findOne({ where : { id , active:true}})
-        if(validUser){
-            validUser.update({ active: false});
-            res.status(200).send(`<html>
+    const id = req.params.id;
+    const validUser = await ForgotModel.findOne({_id: id, active: true })
+    if (validUser) {
+        res.status(200).send(`<html>
                                     <head>
-                                    <title>Expense Tracker</title>
-                                        <script src="https://cdn.tailwindcss.com"></script>
+                            
                                     </head>
                                     <body>
                                     <script>
@@ -91,57 +89,56 @@ const resetPassword = async (req, res) => {
                                     </form>
                                     </body>
                                 </html>`
-                                )
+        )
 
-            res.end()
-            
-        }
-        else{
-            console.log("user token invalid. Retry with new reset link.")
-            return res.status(404).json({message: "Invalid Link. retry with new password reset link."})
-        }    
+        res.end()
+
+    }
+    else {
+        console.log("user token invalid. Retry with new reset link.")
+        return res.status(404).json({ message: "Invalid Link. retry with new password reset link." })
+    }
 }
 
 
 
 
-//UPDATE PSWD
+
 const updatePassword = async (req, res) => {
     try {
         const { newpassword } = req.query;
         const { resetpasswordid } = req.params;
-        ForgotModel.findOne({ where : { id: resetpasswordid }}).then(validUser => {
-            User.findOne({where: { id : validUser.usersTbId}}).then(user => {
-                if(user) {
-                    //encrypt the password
-                    const saltRounds = 10;
-                    bcrypt.genSalt(saltRounds, function(err, salt) {
-                        if(err){
+        const validUser = await ForgotModel.findOne({_id: resetpasswordid })
+        if (!validUser) {
+            return res.status(404).json({ error: 'No Forget Request exists for user. Retry forgot password!', success: false })
+        }
+        
+                //encrypt the password
+                const saltRounds = 10;
+                bcrypt.genSalt(saltRounds, function (err, salt) {
+                    if (err) {
+                        throw new Error(err);
+                    }
+                    bcrypt.hash(newpassword, salt, async function (err, hash) {
+                        // Store hash in your password DB.
+                        if (err) {
                             throw new Error(err);
                         }
-                        bcrypt.hash(newpassword, salt, function(err, hash) {
-                            // Store hash in your password DB.
-                            if(err){
-                                throw new Error(err);
-                            }
-                            user.update({ password: hash }).then(() => {
-                                res.status(201).json({message: 'Successfuly updated the new password. Please login using new Password.'})
-                                return ;
-                            })
-                        });
+                        const user = await User.findOneAndUpdate({ _id: validUser.usersTbId },{ password: hash },{new:true})
+                        if(user) {
+                            await ForgotModel.findOneAndUpdate({ _id: resetpasswordid},{ active: false },{new:true})
+                            res.status(201).json({ message: 'Successfuly updated the new password. Please login using new Password.' })
+                            return;
+                        }
                     });
-            } else{
-                return res.status(404).json({ error: 'No user Exists', success: false})
-            }
-            })
-        })
-    } catch(error){
-        return res.status(403).json({ error, success: false } )
+                });
+    } catch (error) {
+        return res.status(403).json({ error, success: false })
     }
 }
 
 
 
 module.exports = {
-    forgotPassword,resetPassword,updatePassword
+    forgotPassword, resetPassword, updatePassword
 }

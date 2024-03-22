@@ -1,4 +1,35 @@
-const Sequelize = require('sequelize');
+const mongoose = require("mongoose");
+
+const ForgotPasswordSchema = new mongoose.Schema({
+  active: {
+    type:Boolean,
+  },
+  usersTbId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+    onDelete: 'CASCADE'
+  },
+},
+  { timestamps: true });
+
+const ForgotPassword = mongoose.model("ForgotPassword", ForgotPasswordSchema);
+module.exports = ForgotPassword;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*const Sequelize = require('sequelize');
 const sequelize =require('../utils/database')
 
 const ForgotPassword = sequelize.define('forgotpassword_tb', {
@@ -15,4 +46,4 @@ const ForgotPassword = sequelize.define('forgotpassword_tb', {
 
 });
 
-module.exports = ForgotPassword;
+module.exports = ForgotPassword;*/

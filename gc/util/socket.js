@@ -17,13 +17,13 @@ function setupSocketServer(server) {
             io.emit('user-list', Object.values(onlineUsers));
         });
 
-        // group message emitted from client
+        
         socket.on('sending_group_message', (data) => {
             const chat = formatGrpMessage(data.name, data.message, data.groupId);
             socket.broadcast.emit('ReceivedGrpMessage', chat);
         });
 
-        // Handle disconnect event
+        
         socket.on('disconnect', () => {
             const user = onlineUsers[socket.id];
             delete onlineUsers[socket.id];

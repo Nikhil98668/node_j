@@ -2,10 +2,11 @@ const Users = require('../models/usersModel')
 var jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+require('dotenv').config();
 
 
 function generateToken(email, name, userId) {
-    return (jwt.sign({ email, name, userId }, process.env.JWT_SECRETKEY))
+    return (jwt.sign({ email, name, userId }, process.env.JWT_SECRET_KEY))
 }
 
 
@@ -13,12 +14,12 @@ function generateToken(email, name, userId) {
 exports.createUser = async (req, res) => {
     try {
         const { name, email, phone, password } = req.body;
-        console.log("hiii")
+        
         const [newUser, created] = await Users.findOrCreate({
             where: { email },
             defaults: { name, phone, password: await bcrypt.hash(password, saltRounds) },
         });
-        console.log("hey")
+        
 
         if (!created) {
             return res.status(409).json({
@@ -27,7 +28,7 @@ exports.createUser = async (req, res) => {
         }
         return res.status(201).json({
             message: "Successfuly created new user.!",
-            //user: newUser,
+            
         });
     } catch (err) {
         return res.status(500).json({ message: err.message });
@@ -35,7 +36,6 @@ exports.createUser = async (req, res) => {
 };
 
 
-//@desc: Sign in
 exports.signUser = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -60,9 +60,9 @@ exports.signUser = async (req, res) => {
 }
 
 
-//@desc: Get Users (id and name)
+
 exports.getUsers = async (req, res) => {
-    //console.log({ token: req })
+    
     try {
         const users = await Users.findAll();
         if (!users) {

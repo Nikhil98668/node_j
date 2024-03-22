@@ -10,6 +10,36 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;700&family=Kavoon&family=Metal+Mania&family=Poppins:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css" />
+    <style>
+      body {
+      font-family: 'Arial', sans-serif;
+      background-color: olivedrab;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    .header {
+      background-color: #65beb2c1;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header img {
+      width: 60px;
+      height: 50px;
+      margin-left: 20px;
+    }
+
+    .header .title {
+      font-family: 'Arial', sans-serif;
+      font-size: 30px;
+      color: #080808;
+    }
+
+    </style>
 </head>
 
 <body>
@@ -44,7 +74,7 @@
             <input class="ExpenseTypeRadio  appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-[#002D74]  mr-2 cursor-pointer" type="radio" name="amountType" id="expenseRadio" value="expense" required>
             <label class="inline-block text-[#002D74] text-sm font-bold" for="expenseRadio">Expense</label>
             <input class="ExpenseTypeRadio  appearance-none rounded-full h-4 w-4 ml-2 border border-gray-300 bg-white checked:bg-blue-600 checked:border-[#002D74]  mr-2 cursor-pointer" type="radio" name="amountType" id="incomeRadio" value="income" required>
-            <label class="inline-block text-[#002D74] text-sm font-bold " for="incomeRadio">Income</label>
+            <label class="inline-block text-[#002D74] text-sm font-bold " for="incomeRadio"></label>
           </div>
           <div class="mb-3">
             <label class="text-[#002D74] block  text-sm font-bold mb-2" for="addexpenseinput">

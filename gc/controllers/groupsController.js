@@ -162,9 +162,9 @@ exports.updateGroupsMembers = async (req, res) => {
         if (!group) {
             return res.status(404).send({ message: 'Group not found' });
         }
-        const members = JSON.parse(group.members);
+        const members = JSON.parse(group.members);//string to js object
         const updatedMembers = [...members, ...newmembers].map(Number);
-        group.members = JSON.stringify(updatedMembers);
+        group.members = JSON.stringify(updatedMembers);//vice versa
         const response = await group.save();
         res.status(200).send({ message: 'Group members updated successfully', response });
     }
